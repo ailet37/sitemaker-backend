@@ -20,16 +20,12 @@ export class SiteController {
         const block = await this.SiteService.getBlock(blockID);
         if (!block) throw new NotFoundException('Block does not exist!');
         return res.status(HttpStatus.OK).json(block);
-
     }
 
     @Post('/block')
     async addBlock(@Res() res, @Body() CreateBlockDTO: CreateBlockDTO) {
         const newBlock = await this.SiteService.addBlock(CreateBlockDTO);
-        return res.status(HttpStatus.OK).json({
-            message: "Block has been submitted successfully!",
-            block: newBlock
-        })
+        return res.status(HttpStatus.OK).json(newBlock);
     }
 
     @Put('/blocks/:blockID')
@@ -38,19 +34,14 @@ export class SiteController {
     ) {
         const editedBlock = await this.SiteService.editBlock(blockID, createBlockDTO);
         if (!editedBlock) throw new NotFoundException('Block does not exist!');
-        return res.status(HttpStatus.OK).json({
-            message: 'Block has been successfully updated',
-            block: editedBlock
-        })
+        return res.status(HttpStatus.OK).json(editedBlock);
     }
 
     @Delete('/blocks/:blockID')
     async deleteBlock(@Res() res, @Param('blockID', new ValidateObjectId()) blockID) {
         const deletedBlock = await this.SiteService.deleteBlock(blockID);
         if (!deletedBlock) throw new NotFoundException('Block does not exist!');
-        return res.status(HttpStatus.OK).json({
-            message: 'Block has been deleted!',
-            block: deletedBlock
-        })
+        const blocks = await this.SiteService.getBlocks();
+        return res.status(HttpStatus.OK).json(blocks);
     }
 }
